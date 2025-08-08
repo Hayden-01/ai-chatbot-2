@@ -26,7 +26,7 @@ def home():
     import os
 
 
-    port = 5000
+    
     # Simple HTML chat interface
     html = '''
     <!DOCTYPE html>
@@ -47,14 +47,7 @@ def home():
 
 if __name__ == "__main__":
    
-ChatGPT said:
-This usually happens when os.environ.get("PORT") returns an empty string "", which can still break int() conversion if not handled properly.
 
-Let's fix it with a more explicit check that treats empty strings as missing:
-
-python
-Copy
-Edit
 import os
 
 def get_port():
