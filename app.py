@@ -7,6 +7,7 @@ app = Flask(__name__)
 # Set your OpenRouter API key here or via environment variable
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "YOUR_API_KEY_HERE")
 openai.api_key = OPENROUTER_API_KEY
+openai.api_base = "https://openrouter.ai/api/v1"
 
 COMPANY_NAME = "Synthara"
 WELCOME_MESSAGE = f"Welcome to {COMPANY_NAME} AI Customer Service!"
