@@ -25,9 +25,7 @@ def home():
         return jsonify({"reply": bot_reply})
     import os
 
-try:
-    port = int(os.environ.get("PORT", 5000))
-except (TypeError, ValueError):
+
     port = 5000
     # Simple HTML chat interface
     html = '''
@@ -51,3 +49,6 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
+try:
+    port = int(os.environ.get("PORT", 5000))
+except (TypeError, ValueError):
