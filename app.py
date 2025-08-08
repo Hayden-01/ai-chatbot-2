@@ -18,7 +18,7 @@ def chatbot_response(message):
     ]
     try:
         response = openai.chat.completions.create(
-            model="gpt-5",
+            model="gpt-4o-mini",
             messages=messages,
             max_tokens=150,
             temperature=0.7,
