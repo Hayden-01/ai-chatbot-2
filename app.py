@@ -1,20 +1,37 @@
-from flask import Flask, request, jsonify, render_template_string
 import os
+import openai
+from flask import Flask, request, jsonify, render_template_string
 
 app = Flask(__name__)
+
+# Set your OpenRouter API key here or via environment variable
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "YOUR_API_KEY_HERE")
+
+openai.api_key = OPENROUTER_API_KEY
 
 COMPANY_NAME = "Your Company Name"
 WELCOME_MESSAGE = f"Welcome to {COMPANY_NAME} AI Customer Service!"
 
-def chatbot_response(message):
-    # Simple example response, customize as needed
-    message = message.lower()
-    if "hello" in message:
-        return f"Hello! How can {COMPANY_NAME} assist you today?"
-    elif "help" in message:
-        return "Sure, please provide more details about your issue."
-    else:
-        return "Sorry, I didn't understand that. Could you please rephrase?"
+def chatbot_response(message, history=None):
+    # Prepare messages for chat completion (system + user)
+    messages = [
+        {"role": "system", "content": f"You are a helpful assistant for {COMPANY_NAME}."},
+    ]
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content": message})
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4o-mini",  # Or any OpenRouter-supported model
+            messages=messages,
+            max_tokens=150,
+            temperature=0.7,
+        )
+        reply = response.choices[0].message["content"]
+        return reply.strip()
+    except Exception as e:
+        return f"Sorry, I am having trouble right now. ({str(e)})"
 
 @app.route("/")
 def home():
@@ -35,12 +52,12 @@ def home():
             input.value = "";
             let chat = document.getElementById("chat");
             chat.innerHTML += "<p><b>You:</b> " + msg + "</p>";
-            let response = await fetch("/get", {
+            const res = await fetch("/get", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({message: msg})
             });
-            let data = await response.json();
+            const data = await res.json();
             chat.innerHTML += "<p><b>Bot:</b> " + data.reply + "</p>";
             chat.scrollTop = chat.scrollHeight;
         }
@@ -54,8 +71,8 @@ def home():
 def get_bot_response():
     data = request.get_json(force=True)
     user_message = data.get("message", "")
-    bot_reply = chatbot_response(user_message)
-    return jsonify({"reply": bot_reply})
+    reply = chatbot_response(user_message)
+    return jsonify({"reply": reply})
 
 def get_port():
     port_str = os.environ.get("PORT")
@@ -68,6 +85,11 @@ def get_port():
         else:
             return 5000
     except Exception:
+        return 5000
+
+if __name__ == "__main__":
+    port = get_port()
+    app.run(host="0.0.0.0", port=port, debug=True)
         return 5000
 
 if __name__ == "__main__":
