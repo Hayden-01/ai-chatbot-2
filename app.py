@@ -47,18 +47,28 @@ def home():
 
 if __name__ == "__main__":
    
-    import os
+ChatGPT said:
+This usually happens when os.environ.get("PORT") returns an empty string "", which can still break int() conversion if not handled properly.
+
+Let's fix it with a more explicit check that treats empty strings as missing:
+
+python
+Copy
+Edit
+import os
 
 def get_port():
-    port_str = os.environ.get("PORT", "")
+    port_str = os.environ.get("PORT")
+    if port_str is None or port_str.strip() == "":
+        return 5000  # default port
     try:
         port = int(port_str)
-        if port <= 0 or port > 65535:
+        if not (1 <= port <= 65535):
             raise ValueError("Port out of range")
         return port
-    except (ValueError, TypeError):
-        return 5000  # default port
+    except Exception:
+        return 5000  # fallback
 
 port = get_port()
 
-app.run(host="0.0.0.0", port=port, debug=True)
+app.run(host="0.0.0.0", port=port, debug=True)    
