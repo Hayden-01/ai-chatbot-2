@@ -5,11 +5,11 @@ from flask import Flask, request, jsonify, render_template_string
 app = Flask(__name__)
 
 # Set your OpenRouter API key here or via environment variable
-OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "YOUR_API_KEY_HERE")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "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")
 
 openai.api_key = OPENROUTER_API_KEY
 
-COMPANY_NAME = "Your Company Name"
+COMPANY_NAME = "Synthara"
 WELCOME_MESSAGE = f"Welcome to {COMPANY_NAME} AI Customer Service!"
 
 def chatbot_response(message, history=None):
