@@ -46,9 +46,19 @@ def home():
     return render_template_string(html)
 
 if __name__ == "__main__":
+   
     import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
-try:
-    port = int(os.environ.get("PORT", 5000))
-except (TypeError, ValueError):
+
+def get_port():
+    port_str = os.environ.get("PORT", "")
+    try:
+        port = int(port_str)
+        if port <= 0 or port > 65535:
+            raise ValueError("Port out of range")
+        return port
+    except (ValueError, TypeError):
+        return 5000  # default port
+
+port = get_port()
+
+app.run(host="0.0.0.0", port=port, debug=True)
