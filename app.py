@@ -52,7 +52,7 @@ import os
 
 def get_port():
     port_str = os.environ.get("PORT")
-    if port_str is None or port_str.strip() == "":
+    if port_str is None or port_str.strip() == "0":
         return 5000  # default port
     try:
         port = int(port_str)
